@@ -14,9 +14,6 @@ class AkinatorViewModel : ViewModel() {
     private val questionRepository = QuestionRepositoryClass()
     val car = CarRepositoryClass()
 
-    private val _allCars = mutableListOf<Car>()
-    private val _allQuestions = mutableListOf<Question>()
-
     private val _filteredCars = MutableStateFlow<List<Car>>(emptyList())
     val filteredCars: StateFlow<List<Car>> = _filteredCars.asStateFlow()
 
@@ -31,17 +28,15 @@ class AkinatorViewModel : ViewModel() {
 
     fun loadData() {
         viewModelScope.launch {
-            _allCars.addAll(carRepository.getCar())
-            _allQuestions.addAll(questionRepository.getQuestion())
+            carRepository.getCar()
+            questionRepository.getQuestion()
             resetGame()
-
         }
     }
 
     fun resetGame() {
-        _filteredCars.value = _allCars.toList()
-        _remainingQuestions.clear()
-        _remainingQuestions.addAll(_allQuestions)
+        _filteredCars.value = carRepository.getCar()
+        _remainingQuestions.addAll(questionRepository.getQuestion())
         _currentQuestion.value = getNextQuestion()
     }
 
